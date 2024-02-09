@@ -45,7 +45,7 @@ public class EtudiantServiceImp implements EtudiantService{
     @Override
     public EtudiantDto updateEtudiant(Long id, EtudiantDto articleDto) {
         Etudiant etudiant = etudiantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Article not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Etudiant not found with id: " + id));
         etudiantMapper.updateEtudiantFromDto(articleDto, etudiant);
         etudiant = etudiantRepository.save(etudiant);
         return etudiantMapper.toDto(etudiant);
