@@ -11,19 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-         java-version: 17
-         distribution: 'corretto'
-         cache: maven
+          java-version: 17
+          distribution: 'corretto'
+          cache: maven
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
 
       - name: Tests Unitaires
         run: mvn -B test --file pom.xml
 
       - name: Builder l'application
-        run: | 
-         mvn clean 
-         mvn -B package --file pom.xml
+        run: mvn -B clean package --file pom.xml
