@@ -28,8 +28,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Tests Unitaires
-        run: mvn -B test --file pom.xml
-
       - name: Builder l'application
         run: mvn -B clean package --file pom.xml
