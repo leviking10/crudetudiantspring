@@ -6,4 +6,5 @@ WORKDIR /crudetudiantspring
 COPY target/crudetudiant-0.0.1.jar /crudetudiantspring/crudetudiant.jar
 EXPOSE 8080
 # Exécuter l'application
-CMD["java","-jar","crudetudiant.jar"]
+CMD java -jar crudetudiant.jar
+
