@@ -3,7 +3,7 @@ FROM openjdk:17-jdk
 
 WORKDIR /crudetudiantspring
 # Copier les fichiers exécutables .jar dans le conteneur
-COPY target/crudetudiant-0.0.1.jar /crudetudiantspring/crudetudiant.jar
+COPY target/crudetudiant.jar /crudetudiantspring/crudetudiant.jar
 EXPOSE 8080
 # Exécuter l'application
 CMD java -jar crudetudiant.jar

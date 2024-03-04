@@ -104,5 +104,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>crudetudiant</finalName>
     </build>
 </project>
