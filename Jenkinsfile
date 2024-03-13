@@ -15,10 +15,16 @@ pipeline {
         }
 
         stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
+                    agent {
+                        docker {
+                            image 'maven:3.8.4-openjdk-17' // Utilisez une image Docker Maven
+                            args '-v /var/jenkins_home/.m2:/root/.m2' // Montez le cache local Maven pour éviter de retélécharger les dépendances
+                        }
+                    }
+                    steps {
+                        sh 'mvn test'
+                    }
+                }
 
         stage('Build and Push Docker Image') {
             steps {
@@ -30,19 +36,6 @@ pipeline {
                         dockerImage.push("latest")
                     }
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                // Nettoyer les images Docker inutilisées
-                sh "docker image prune -af"
-                // Nettoyer les conteneurs Docker arrêtés
-                sh "docker container prune -f"
-                // Supprimer les volumes non utilisés si nécessaire
-                sh "docker volume prune -f"
             }
         }
     }
