@@ -44,7 +44,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2-
 
-      - name: Builder l'application
+      - name: Builder et tester l'application
+        env:
+          DB_HOST: 127.0.0.1
+          DB_NAME: crudetudiantdb
+          DB_USERNAME: user
+          DB_PASSWORD: user
         run: mvn -B clean package --file pom.xml
 
       - name: Generate timestamp
@@ -64,4 +69,3 @@ jobs:
           dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/crudetudiantspring:${{ steps.timestamp.outputs.timestamp }}
-

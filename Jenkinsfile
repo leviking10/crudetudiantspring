@@ -2,11 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // Définir les variables d'environnement nécessaires
+        // Variables d'environnement
         DOCKER_IMAGE = "mleviking/crudetudiantspring"
-        // Assurez-vous de configurer ces identifiants dans Jenkins
         DOCKER_CREDENTIALS_ID = "dockerhub-credentials"
-        KUBECONFIG_CREDENTIALS_ID = "kubeconfig-credentials"
     }
 
     stages {
@@ -15,38 +13,34 @@ pipeline {
                 git 'https://github.com/leviking10/crudetudiantspring.git'
             }
         }
+
         stage('Test') {
             steps {
                 sh 'mvn test'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS_ID) {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    // Utilisation de BUILD_ID pour l'unicité
+                    def dockerImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push("${env.BUILD_ID}")
+                        dockerImage.push("latest")
                     }
                 }
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            steps {
+        post {
+            always {
                 script {
-                    kubernetesDeploy(
-                        kubeconfigId: KUBECONFIG_CREDENTIALS_ID,
-                        configs: 'k8s.yml',
-                        enableConfigSubstitution: true
-                    )
+                    // Nettoyer les images Docker inutilisées
+                    sh "docker image prune -af"
+                    // Nettoyer les conteneurs Docker arrêtés
+                    sh "docker container prune -f"
+                    // Supprimer les volumes non utilisés si nécessaire
+                    sh "docker volume prune -f"
                 }
             }
         }
