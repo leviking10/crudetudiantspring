@@ -53,12 +53,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            // Nettoyer après les builds
-            sh 'docker rm -f mysql'
-            sh 'docker image prune -af'
-        }
-    }
 }
