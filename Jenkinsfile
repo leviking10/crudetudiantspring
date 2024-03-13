@@ -32,16 +32,17 @@ pipeline {
                 }
             }
         }
-        post {
-            always {
-                script {
-                    // Nettoyer les images Docker inutilisées
-                    sh "docker image prune -af"
-                    // Nettoyer les conteneurs Docker arrêtés
-                    sh "docker container prune -f"
-                    // Supprimer les volumes non utilisés si nécessaire
-                    sh "docker volume prune -f"
-                }
+    }
+
+    post {
+        always {
+            script {
+                // Nettoyer les images Docker inutilisées
+                sh "docker image prune -af"
+                // Nettoyer les conteneurs Docker arrêtés
+                sh "docker container prune -f"
+                // Supprimer les volumes non utilisés si nécessaire
+                sh "docker volume prune -f"
             }
         }
     }
