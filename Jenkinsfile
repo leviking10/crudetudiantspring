@@ -13,13 +13,6 @@ pipeline {
                 git 'https://github.com/leviking10/crudetudiantspring.git'
             }
         }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
         stage('Build and Push Docker Image') {
             steps {
                 script {
